@@ -29,7 +29,7 @@ class dynDNS(object):
         '''Dive into the puppet.conf and pull out the cert name
         This is going to be used as the hostname
         '''
-        with open('/etc/puppet/puppet.conf' 'r') as puppetConf:
+        with open('/etc/puppet/puppet.conf', 'r') as puppetConf:
             for line in puppetConf:
                 if 'certname' in line:
                     print line
