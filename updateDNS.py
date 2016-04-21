@@ -13,6 +13,7 @@ class dynDNS(object):
         self.konstructorUser    = ''
         self.publicDNS          = ''
         self.currentIP          = ''
+        self.certName           = ''
 
 
     def getPublicIP(self):
@@ -32,4 +33,17 @@ class dynDNS(object):
         with open('/etc/puppet/puppet.conf', 'r') as puppetConf:
             for line in puppetConf:
                 if 'certname' in line:
-                    print line
+                    # remove the carriage return
+                    line = line.rstrip()
+                    # now let start pulling it apart to get just the PDS name
+                    # remove the 'certname =' part
+                    certParts = line.split('=')
+                    # now lets get rid of the rest of the PDS domain
+                    certParts = certParts[1]
+                    self.certName = certParts.split('.')[0]
+        if self.certName == '':
+            # then we haven't managed to get the puppet cert name....
+            raise IOError
+        else:
+            return True
+
