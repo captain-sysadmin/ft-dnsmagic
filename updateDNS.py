@@ -88,7 +88,7 @@ class dynDNS(object):#pylint: disable=too-many-instance-attributes
         '''Use konstructor to delete the old DNS record
         '''
         headers = self.headers
-        if self.konstructorUser and self.konstructorPass:
+        if not self.konstructorKey:
             # then use that as the auth mechanism
             delete = requests.delete('{0}/v1/dns/delete?zone=ft.com&name={1}.{2}'.format(self.konstructorURL,self.certName,self.domainSuffix), auth=(self.konstructorUser, self.konstructorPass), headers=headers)
         else:
@@ -104,11 +104,11 @@ class dynDNS(object):#pylint: disable=too-many-instance-attributes
         under in the form of 'certname.domainSuffix'
         '''
         headers = self.headers
-        if self.konstructorPass and self.konstructorUser:
+        if not self.konstructorKey:
             create = requests.post('{0}/v1/dns/create?zone=ft.com&name={1}.{2}'.format( self.konstructorURL, self.certName, self.domainSuffix), auth=(self.konstructorUser, self.konstructorPass), headers=headers)
         else:
             headers.update({'Authorization': self.konstructorKey})
-            create = requests.post('{0}/v1/dns/create?zone=ft.com&name={1}.{2}'.format( self.konstructorURL, self.certName, self.domainSuffix),headers=headers)
+            create = requests.post('{0}:{1}@{2}/v1/dns/create?zone=ft.com&name={3}.{4}'.format(self.konstructorUser,self.konstructorPass, self.konstructorURL, self.certName, self.domainSuffix),headers=headers)
         if create.status_code == requests.codes.ok:#pylint: disable=no-member
             return True
         else:
